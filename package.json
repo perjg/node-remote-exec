@@ -1,6 +1,6 @@
 {
-  "name": "remote-exec",
-  "version": "0.0.3",
+  "name": "remote-exec-2",
+  "version": "0.0.4",
   "description": "Execute shell commands on one or more remote computers via SSH",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tpresley/node-remote-exec.git"
+    "url": "https://github.com/perjg/node-remote-exec.git"
   },
   "keywords": [
     "ssh",
