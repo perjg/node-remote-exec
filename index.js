@@ -90,15 +90,16 @@ function RemoteExec(hosts, commands, options, cb) {
         command = command.replace(new RegExp('{{' + param + '}}'), params[param]);
       }
 
-      var missingParam
+      var missingParam;
       if (missingParam = /{{[a-zA-Z0-9_]+}}/.exec(command)) {
         done(new Error('Missing parameter: ' + missingParam[0]));
       }
 
       // run the current command
       connection.exec(command, function(err, stream){
+        var streamError;
         if (err) done(err);
-        
+
         // forward output to specified stream based on extended (null || stderr)
         stream.on('data', function(data, extended){
           ((extended && extended === 'stderr') ? stderr : stdout).write(data);
@@ -106,15 +107,16 @@ function RemoteExec(hosts, commands, options, cb) {
 
         // capture the end of the command and return error if command exited with non-zero code
         stream.on('exit', function(code, signal){
-          var err;
           if (code !== 0) {
-            err = new Error(host.name + ' : ' + command + ' [Exit ' + code + ']');
+            streamError = new Error(host.name + ' : ' + command + ' [Exit ' + code + ']');
           }
-          done(err);
         });
 
+        stream.on('close', function(){
+          done(streamError);
+        });
       });
-    }    
+    }
 
     // 1: connect to current host
     // 2: run each command
